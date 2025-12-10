@@ -4,7 +4,7 @@ from database.db import SessionLocal
 from database.models import User, Order
 from utils.helpers import format_currency
 from config import ADMIN_TG_ID
-
+from assets import stickers  # stickers modulini import qilamiz
 # Conversation states
 ADMIN_BALANCE, ADMIN_CHECK_ORDER = range(2)
 
