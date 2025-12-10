@@ -7,7 +7,7 @@ from utils.api import create_order
 from database.db import SessionLocal
 from database.models import User, Service, Order
 from config import ADMIN_TG_ID
-
+from assets import stickers  # stickers modulini import qilamiz
 # Conversation states
 SELECT_SERVICE, ENTER_LINK, ENTER_QUANTITY, CONFIRM_ORDER = range(4)
 
