@@ -1,0 +1,9 @@
+# Bu modul stiker fayllarining yo'llarini saqlaydi
+WELCOME = 'assets/stickers/welcome.webp'
+INSTAGRAM = 'assets/stickers/instagram.webp'
+TELEGRAM = 'assets/stickers/telegram.webp'
+YOUTUBE = 'assets/stickers/youtube.webp'
+FREE_SERVICE = 'assets/stickers/free_service.webp'
+ORDER_RECEIVED = 'assets/stickers/order_received.webp'
+BALANCE_ADDED = 'assets/stickers/balance_added.webp'
+ERROR = 'assets/stickers/error.webp'
