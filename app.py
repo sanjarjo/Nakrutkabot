@@ -1,23 +1,22 @@
-from flask import Flask, request
-from telegram import Bot, Update
-from config import BOT_TOKEN
-from bot import main  # Agar polling bilan ishlashni xohlasa
+import threading
+from flask import Flask
+from bot import build_app
+import os
 
 app = Flask(__name__)
-bot = Bot(BOT_TOKEN)
 
-@app.route(f'/webhook/{BOT_TOKEN}', methods=['POST'])
-def webhook():
-    update = Update.de_json(request.get_json(force=True), bot)
-    # Dispatcher handlerlari orqali update ni ishlatish
-    # Agar bot polling emas, webhook bilan ishlasa, quyidagi kodni ishlatish kerak
-    from bot import main  # dispatcher import qilinadi
-    main()  # webhook bilan ishlash uchun moslashtirish kerak
-    return 'ok'
+@app.route("/")
+def home():
+    return "SMM Bot is up"
 
-@app.route('/')
-def index():
-    return "SMM Bot ishlayapti!"
+def run_flask():
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+if __name__ == "__main__":
+    # start flask in background thread (for Render health checks)
+    t = threading.Thread(target=run_flask)
+    t.start()
+
+    # start telegram bot (polling)
+    application = build_app()
+    application.run_polling(allowed_updates=None)
