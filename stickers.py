@@ -1,4 +1,3 @@
-# Bu modul stiker fayllarining yo'llarini saqlaydi
 WELCOME = 'assets/stickers/welcome.webp'
 INSTAGRAM = 'assets/stickers/instagram.webp'
 TELEGRAM = 'assets/stickers/telegram.webp'
