@@ -1,5 +1,0 @@
-python-telegram-bot==20.8
-Flask
-SQLAlchemy
-requests
-python-dotenv
