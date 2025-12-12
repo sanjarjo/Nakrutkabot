@@ -1,22 +1,32 @@
-import threading
-from flask import Flask
-from bot import build_app
 import os
+from flask import Flask, request
+from bot import build_app
 
 app = Flask(__name__)
+application = build_app()     # telegram app
 
-@app.route("/")
+# HOME
+@app.route("/", methods=["GET"])
 def home():
-    return "SMM Bot is up"
+    return "SMM Bot Webhook Running"
 
-def run_flask():
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+# TELEGRAM WEBHOOK
+from config import BOT_TOKEN
+WEBHOOK_PATH = f"/webhook/{BOT_TOKEN}"
+
+@app.route(WEBHOOK_PATH, methods=["POST"])
+def webhook():
+    update = request.get_json(force=True)
+    application.update_queue.put_nowait(update)
+    return "ok", 200
+
+# SET WEBHOOK
+@app.route("/set-webhook")
+def set_webhook():
+    url = f"https://{os.environ['RENDER_EXTERNAL_HOSTNAME']}{WEBHOOK_PATH}"
+    application.bot.set_webhook(url)
+    return f"Webhook set: {url}"
 
 if __name__ == "__main__":
-    # start flask in background thread (for Render health checks)
-    t = threading.Thread(target=run_flask)
-    t.start()
-
-    # start telegram bot (polling)
-    application = build_app()
-    application.run_polling(allowed_updates=None)
+    # IMPORTANT: ONLY FLASK RUNS ON RENDER
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
