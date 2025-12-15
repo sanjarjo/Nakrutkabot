@@ -61,3 +61,11 @@ async def service_selected(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "🔗 Iltimos, havolani yuboring:\n"
         "Masalan: https://instagram.com/username"
   )
+
+# xizmat tanlanganda
+context.user_data["service_id"] = service_id
+
+await query.message.reply_text(
+    "🔗 Iltimos, havolani yuboring:\n"
+    "Masalan: https://instagram.com/username"
+    )
