@@ -2,6 +2,15 @@ from telegram.ext import Application
 from config import BOT_TOKEN
 from handlers.start import start_handler
 from database.init_db import init_db
+from telegram.ext import CommandHandler, MessageHandler, CallbackQueryHandler, filters
+from handlers.admin import admin_panel
+from handlers.services import services_menu, services_by_category
+from handlers.orders import service_selected
+
+app.add_handler(CommandHandler("admin", admin_panel))
+app.add_handler(MessageHandler(filters.TEXT & filters.Regex("^🛒 Xizmatlar$"), services_menu))
+app.add_handler(CallbackQueryHandler(services_by_category, pattern="^cat_"))
+app.add_handler(CallbackQueryHandler(service_selected, pattern="^service_"))
 
 def build_app():
     init_db()  # 🔥 DB avtomatik yaratiladi
