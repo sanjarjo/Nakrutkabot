@@ -2,7 +2,6 @@ from flask import Flask, request
 from telegram import Update
 from bot import build_app
 import asyncio
-import os
 
 app = Flask(__name__)
 tg_app = build_app()
@@ -12,7 +11,8 @@ def home():
     return "SMM Bot ishlayapti 🚀"
 
 @app.route("/webhook", methods=["POST"])
-def webhook():
-    update = Update.de_json(request.get_json(force=True), tg_app.bot)
-    asyncio.run(tg_app.process_update(update))
+async def webhook():
+    data = request.get_json(force=True)
+    update = Update.de_json(data, tg_app.bot)
+    await tg_app.process_update(update)
     return "OK"
