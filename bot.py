@@ -10,7 +10,10 @@ from handlers.orders import get_link, get_quantity
 from handlers.orders import order_conversation
 from handlers.payments import payment_conversation
 from handlers.admin import add_balance
+from handlers.order_status import check_orders
 
+job_queue = app.job_queue
+job_queue.run_repeating(check_orders, interval=300, first=20)
 app.add_handler(payment_conversation)
 app.add_handler(MessageHandler(filters.TEXT & filters.Regex("^[0-9]+\\|"), add_balance))
 app.add_handler(order_conversation)
