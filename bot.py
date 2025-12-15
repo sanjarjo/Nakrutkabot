@@ -7,7 +7,9 @@ from handlers.admin import admin_panel
 from handlers.services import services_menu, services_by_category
 from handlers.orders import service_selected
 from handlers.orders import get_link, get_quantity
+from handlers.orders import order_conversation
 
+app.add_handler(order_conversation)
 app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, get_link))
 app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, get_quantity))
 app.add_handler(CommandHandler("admin", admin_panel))
