@@ -8,7 +8,11 @@ from handlers.services import services_menu, services_by_category
 from handlers.orders import service_selected
 from handlers.orders import get_link, get_quantity
 from handlers.orders import order_conversation
+from handlers.payments import payment_conversation
+from handlers.admin import add_balance
 
+app.add_handler(payment_conversation)
+app.add_handler(MessageHandler(filters.TEXT & filters.Regex("^[0-9]+\\|"), add_balance))
 app.add_handler(order_conversation)
 app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, get_link))
 app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, get_quantity))
