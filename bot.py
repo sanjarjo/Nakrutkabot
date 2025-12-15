@@ -6,7 +6,10 @@ from telegram.ext import CommandHandler, MessageHandler, CallbackQueryHandler, f
 from handlers.admin import admin_panel
 from handlers.services import services_menu, services_by_category
 from handlers.orders import service_selected
+from handlers.orders import get_link, get_quantity
 
+app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, get_link))
+app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, get_quantity))
 app.add_handler(CommandHandler("admin", admin_panel))
 app.add_handler(MessageHandler(filters.TEXT & filters.Regex("^🛒 Xizmatlar$"), services_menu))
 app.add_handler(CallbackQueryHandler(services_by_category, pattern="^cat_"))
