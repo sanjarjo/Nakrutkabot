@@ -1,4 +1,5 @@
-from telegram.ext import Application
+# bot.py
+from telegram.ext import Application, JobQueue
 from config import BOT_TOKEN
 from database.init_db import init_db
 
@@ -9,36 +10,40 @@ from handlers.orders import order_conversation
 from handlers.payments import payment_conversation
 from handlers.order_status import check_orders
 from handlers.orders_list import my_orders
-
 from telegram.ext import MessageHandler, CallbackQueryHandler, filters
 
 
-def build_app():
+def create_bot():   # build_app o‘rniga
+    # 1️⃣ DB init
     init_db()
 
+    # 2️⃣ JobQueue obyekt
+    job_queue = JobQueue()
+
+    # 3️⃣ Application
     application = (
         Application.builder()
         .token(BOT_TOKEN)
-        .job_queue(True)   # ✅ MUHIM QATOR
+        .job_queue(job_queue)   # ❗ MUHIM
         .build()
     )
 
-    # ✅ Endi job_queue mavjud
+    # 4️⃣ Periodic job
     application.job_queue.run_repeating(
-        check_orders, interval=300, first=20
+        check_orders,
+        interval=300,
+        first=20
     )
 
+    # 5️⃣ Handlers
     application.add_handler(start_handler)
-    application.add_handler(MessageHandler(filters.Regex("^📦 Buyurtmalarim$"), my_orders))
-    application.add_handler(MessageHandler(filters.Regex("^🛒 Xizmatlar$"), services_menu))
-
+    application.add_handler(MessageHandler(filters.TEXT & filters.Regex("^📦 Buyurtmalarim$"), my_orders))
+    application.add_handler(MessageHandler(filters.TEXT & filters.Regex("^🛒 Xizmatlar$"), services_menu))
     application.add_handler(CallbackQueryHandler(services_by_category, pattern="^cat_"))
     application.add_handler(CallbackQueryHandler(service_selected, pattern="^service_"))
-
     application.add_handler(order_conversation)
     application.add_handler(payment_conversation)
-
-    application.add_handler(MessageHandler(filters.Regex("^[0-9]+\\|"), add_balance))
+    application.add_handler(MessageHandler(filters.TEXT & filters.Regex("^[0-9]+\\|"), add_balance))
     application.add_handler(MessageHandler(filters.COMMAND, admin_panel))
 
     return application
