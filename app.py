@@ -1,6 +1,6 @@
 from flask import Flask, request
 from telegram import Update
-from bot import build_app
+from bot import create_bot
 import asyncio
 
 app = Flask(__name__)
