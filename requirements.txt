@@ -1,8 +1,6 @@
-psycopg[binary]
-SQLAlchemy==2.0.31
-Flask==3.0.3
 python-telegram-bot==20.7
-requests==2.32.3
-python-dotenv==1.0.1
-uvicorn==0.23.2
+SQLAlchemy==2.0.31
+psycopg[binary]==3.2.1
+Flask==3.0.3
 gunicorn==21.2.0
+python-dotenv==1.0.1
