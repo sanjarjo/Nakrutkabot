@@ -1,5 +1,11 @@
 from telegram import Update
-from telegram.ext import ContextTypes, ConversationHandler, MessageHandler, filters
+from telegram.ext import (
+    ContextTypes,
+    ConversationHandler,
+    MessageHandler,
+    CommandHandler,
+    filters,
+)
 from database.db import SessionLocal
 from database.models import Payment
 
@@ -34,13 +40,13 @@ async def get_check(update: Update, context: ContextTypes.DEFAULT_TYPE):
     payment = Payment(
         user_id=tg_id,
         amount=amount,
-        status="waiting"
+        status="waiting",
     )
     db.add(payment)
     db.commit()
     db.close()
 
-    # adminga yuboramiz
+    # adminga yuborish
     await context.bot.send_photo(
         chat_id=context.bot_data["ADMIN_ID"],
         photo=photo,
@@ -48,14 +54,25 @@ async def get_check(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "🧾 YANGI TO‘LOV\n\n"
             f"👤 User ID: {tg_id}\n"
             f"💰 Summa: {amount}\n\n"
-            "⚠️ Agar to‘g‘ri bo‘lsa admin paneldan balans qo‘shing"
-        )
+            "⚠️ Admin tekshirishi kutilmoqda"
+        ),
     )
 
     await update.message.reply_text(
         "✅ To‘lov yuborildi.\n"
-        "⏳ Admin tekshiradi va balansni to‘ldiradi"
+        "⏳ Admin tekshiradi"
     )
 
     context.user_data.clear()
     return ConversationHandler.END
+
+
+# ✅ MANA ENG MUHIM QISM
+payment_conversation = ConversationHandler(
+    entry_points=[CommandHandler("payment", start_payment)],
+    states={
+        AMOUNT: [MessageHandler(filters.TEXT & ~filters.COMMAND, get_amount)],
+        CHECK: [MessageHandler(filters.PHOTO, get_check)],
+    },
+    fallbacks=[],
+    )
