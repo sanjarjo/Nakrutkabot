@@ -4,25 +4,25 @@ from telegram import Update
 from bot import create_bot
 import asyncio
 import requests
+import threading
 
-# 1️⃣ Flask va bot
 app = Flask(__name__)
 tg_app = create_bot()
 
-# 2️⃣ Webhookni Flask server ishga tushganda o'rnatish
-@app.before_first_request
+# 1️⃣ Webhookni alohida thread orqali o'rnatish
 def set_webhook():
     BOT_TOKEN = tg_app.bot.token
     WEBHOOK_URL = f"https://nakrutkabot-knbn.onrender.com/webhook/{BOT_TOKEN}"
     res = requests.get(f"https://api.telegram.org/bot{BOT_TOKEN}/setWebhook?url={WEBHOOK_URL}")
     print("Webhook response:", res.json())
 
-# 3️⃣ Test route
+# Flask ishga tushganda thread yaratib webhookni o'rnatamiz
+threading.Thread(target=set_webhook).start()
+
 @app.route("/", methods=["GET"])
 def home():
     return "SMM Bot ishlayapti 🚀"
 
-# 4️⃣ Telegram webhook route
 @app.route(f"/webhook/{tg_app.bot.token}", methods=["POST"])
 def webhook():
     """Telegram webhook"""
