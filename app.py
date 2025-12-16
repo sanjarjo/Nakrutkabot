@@ -9,16 +9,18 @@ tg_app = create_bot()
 
 @app.route("/", methods=["GET"])
 def home():
-    return "SMM Bot ishlayapti 🚀"
+    return "Bot ishlayapti 🚀"
 
 @app.route(f"/webhook/{tg_app.bot.token}", methods=["POST"])
 def webhook():
     data = request.get_json(force=True)
     update = Update.de_json(data, tg_app.bot)
 
-    # asyncio bilan PTB async update process
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(tg_app.process_update(update))
+    # Event loop mavjud bo'lsa, asyncio.ensure_future ishlatamiz
+    loop = asyncio.get_event_loop()
+    if loop.is_running():
+        asyncio.ensure_future(tg_app.process_update(update))
+    else:
+        loop.run_until_complete(tg_app.process_update(update))
 
     return "OK"
