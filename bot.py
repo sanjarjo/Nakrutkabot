@@ -16,14 +16,18 @@ from telegram.ext import MessageHandler, CallbackQueryHandler, filters
 def build_app():
     init_db()
 
-    application = Application.builder().token(BOT_TOKEN).build()
+    application = (
+        Application.builder()
+        .token(BOT_TOKEN)
+        .job_queue(True)   # ✅ MUHIM QATOR
+        .build()
+    )
 
-    # JobQueue
+    # ✅ Endi job_queue mavjud
     application.job_queue.run_repeating(
         check_orders, interval=300, first=20
     )
 
-    # Handlers
     application.add_handler(start_handler)
     application.add_handler(MessageHandler(filters.Regex("^📦 Buyurtmalarim$"), my_orders))
     application.add_handler(MessageHandler(filters.Regex("^🛒 Xizmatlar$"), services_menu))
