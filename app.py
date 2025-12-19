@@ -6,6 +6,10 @@ import asyncio
 app = Flask(__name__)
 tg_app = create_bot()
 
+# 🔴 SHU IKKI QATOR ENG MUHIM
+asyncio.run(tg_app.initialize())
+asyncio.run(tg_app.start())
+
 @app.route("/", methods=["GET"])
 def home():
     return "SMM Bot ishlayapti 🚀"
