@@ -10,21 +10,22 @@ from handlers.orders import order_conversation
 from handlers.payments import payment_conversation
 from handlers.order_status import check_orders
 from handlers.orders_list import my_orders
+
 from telegram.ext import MessageHandler, CallbackQueryHandler, filters
 
 
-def create_bot():   # build_app o‘rniga
+def create_bot():
     # 1️⃣ DB init
     init_db()
 
-    # 2️⃣ JobQueue obyekt
+    # 2️⃣ JobQueue
     job_queue = JobQueue()
 
     # 3️⃣ Application
     application = (
         Application.builder()
         .token(BOT_TOKEN)
-        .job_queue(job_queue)   # ❗ MUHIM
+        .job_queue(job_queue)
         .build()
     )
 
