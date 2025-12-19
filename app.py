@@ -6,7 +6,7 @@ import asyncio
 app = Flask(__name__)
 tg_app = create_bot()
 
-# 🔴 SHU IKKI QATOR ENG MUHIM
+# 🔴 MUHIM: Telegram application ishga tushadi
 asyncio.run(tg_app.initialize())
 asyncio.run(tg_app.start())
 
@@ -19,10 +19,8 @@ def webhook():
     data = request.get_json(force=True)
     update = Update.de_json(data, tg_app.bot)
 
-    loop = asyncio.get_event_loop()
-    if loop.is_running():
-        asyncio.ensure_future(tg_app.process_update(update))
-    else:
-        loop.run_until_complete(tg_app.process_update(update))
+    asyncio.get_event_loop().create_task(
+        tg_app.process_update(update)
+    )
 
     return "OK"
