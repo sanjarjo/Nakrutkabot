@@ -1,18 +1,25 @@
-from flask import Flask, request
-from telegram import Update
+# app.py
+from fastapi import FastAPI, Request
 from bot import create_bot
-import asyncio
+from telegram import Update
 
-app = Flask(__name__)
+import asyncio
+import os
+
+app = FastAPI()
 tg_app = create_bot()
 
-@app.route("/", methods=["GET"])
-def home():
-    return "SMM Bot ishlayapti 🚀"
+# Root route
+@app.get("/")
+async def root():
+    return {"message": "SMM Bot ishlayapti 🚀"}
 
-@app.route(f"/webhook/{tg_app.bot.token}", methods=["POST"])
-def webhook():
-    data = request.get_json(force=True)
+# Webhook route
+@app.post(f"/webhook/{tg_app.bot.token}")
+async def webhook(request: Request):
+    data = await request.json()
     update = Update.de_json(data, tg_app.bot)
+    await tg_app.process_update(update)
+    return {"ok": True}
 
-    return "OK"
+# Run server with uvicorn: uvicorn app:app --host 0.0.0.0 --port $PORT
