@@ -15,8 +15,4 @@ def webhook():
     data = request.get_json(force=True)
     update = Update.de_json(data, tg_app.bot)
 
-    asyncio.get_event_loop().create_task(
-        tg_app.process_update(update)
-    )
-
     return "OK"
